@@ -1,5 +1,3 @@
-extern crate bcrypt;
-
 use age::{DecryptError, EncryptError};
 use age::scrypt::{Identity, Recipient};
 use age::secrecy::SecretString;
