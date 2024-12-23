@@ -1,0 +1,14 @@
+[package]
+name = "waxenc"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
+
+[dependencies]
+winsafe = { version = "0.0.22", features = ["gui"] }
+bcrypt = "0.16.0"
+age = "0.11.1"
