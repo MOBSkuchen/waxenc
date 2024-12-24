@@ -18,6 +18,16 @@ pub fn display_error(error_text: String) {
     hwnd.MessageBox(error_text.as_str(), "Error", MB::OK | MB::ICONERROR).expect("Failed!");
 }
 
+fn cryptography_error(error_text: String) {
+    if error_text == "Header is invalid" {
+        display_error("Decryption failed, because the file is not encrypted!".to_string());
+    } else if error_text == "Decryption failed" {
+        display_error("Decryption failed, because the password is invalid!".to_string());
+    } else {
+        display_error(format!("Decryption failed: {}", error_text));
+    }
+}
+
 fn encrypt_file_xx(file_name: String, password: String, replace: bool) {
     let mut target_file = file_name.clone() + if replace {""} else {".waxe"};
     let file_buffer_r = fs::read(&file_name);
@@ -28,7 +38,7 @@ fn encrypt_file_xx(file_name: String, password: String, replace: bool) {
     let file_buffer = file_buffer_r.unwrap();
     let encrypted_r = encrypt_buffer(file_buffer, password);
     if encrypted_r.is_err() {
-        display_error("Encryption failed: ".to_string() + encrypted_r.unwrap_err().to_string().as_str());
+        cryptography_error(encrypted_r.unwrap_err().to_string());
         return;
     }
     let encrypted_buffer = encrypted_r.unwrap();
@@ -58,7 +68,7 @@ fn decrypt_file_xx(file_name: String, password: String, replace: bool) {
     let file_buffer = file_buffer_r.unwrap();
     let decrypted_r = decrypt_buffer(file_buffer, password);
     if decrypted_r.is_err() {
-        display_error("Decryption failed: ".to_string() + decrypted_r.unwrap_err().to_string().as_str());
+        cryptography_error(decrypted_r.unwrap_err().to_string());
         return;
     }
     let decrypted_buffer = decrypted_r.unwrap();
