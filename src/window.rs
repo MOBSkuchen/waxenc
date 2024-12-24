@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 use winsafe::{prelude::*, gui, AnyResult, co, HWND, co::MB};
+use winsafe::gui::{CheckBoxOpts, CheckState};
 use crate::lib_crypt::{decrypt_buffer, encrypt_buffer};
 
 #[derive(Clone)]
@@ -141,6 +142,8 @@ impl MyWindow {
                 ..Default::default()
             }
         );
+        
+        replace_checkbox.set_check_state(CheckState::Checked);
 
         let new_self = Self { wnd, submit_button, password_entry, replace_checkbox, op_enc, file };
         new_self.events();
