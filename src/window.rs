@@ -15,7 +15,7 @@ pub struct MyWindow {
 
 pub fn display_error(error_text: String) {
     let hwnd = HWND::GetDesktopWindow();
-    hwnd.MessageBox(error_text.as_str(), "Error", MB::OKCANCEL | MB::ICONERROR).expect("Failed!");
+    hwnd.MessageBox(error_text.as_str(), "Error", MB::OK | MB::ICONERROR).expect("Failed!");
 }
 
 fn encrypt_file_xx(file_name: String, password: String, replace: bool) {
