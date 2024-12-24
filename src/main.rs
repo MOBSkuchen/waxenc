@@ -3,7 +3,7 @@ mod lib_crypt;
 mod window;
 
 use std::{env, fs};
-use winsafe::{prelude::*, co, AnyResult, HWND};
+use winsafe::{AnyResult};
 use window::MyWindow;
 use crate::window::display_error;
 
