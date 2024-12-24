@@ -143,7 +143,7 @@ impl MyWindow {
 
     fn events(&self) {
         let self2 = self.clone();
-        self.submit_button.on().bn_clicked(move || { // button click event
+        self.submit_button.on().bn_clicked(move || {
             if self2.op_enc {
                 encrypt_file_xx(self2.file.clone(), self2.password_entry.text(), self2.replace_checkbox.is_checked());
                 self2.wnd.close()

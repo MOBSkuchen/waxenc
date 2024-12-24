@@ -10,8 +10,7 @@ use crate::window::display_error;
 
 fn main() {
     if let Err(e) = run_app() {
-        HWND::NULL.MessageBox(
-            &e.to_string(), "Uncaught error", co::MB::ICONERROR).unwrap();
+        display_error(format!("Application error: {}", e));
     }
 }
 
