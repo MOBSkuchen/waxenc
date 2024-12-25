@@ -103,7 +103,7 @@ pub fn absolute_path(path: impl AsRef<Path>) -> io::Result<PathBuf> {
 fn hash_crafter(file_path: String) {
     nwg::init().expect("Failed to init Native Windows GUI");
     nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
-    
+
     let x = absolute_path(&file_path).unwrap();
     let default_path = x.parent().unwrap().to_str().unwrap();
 

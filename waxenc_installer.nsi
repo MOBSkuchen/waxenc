@@ -21,6 +21,8 @@ Section "Install"
     WriteRegStr HKCR "waxefile\shell\Decrypt with Wax\command" "" "$INSTDIR\waxenc.exe dec %1"
     WriteRegStr HKCR "*\shell\Encrypt with Wax\command" "" "$INSTDIR\waxenc.exe enc %1"
     WriteRegStr HKCR "*\shell\Decrypt with Wax\command" "" "$INSTDIR\waxenc.exe dec %1"
+    WriteRegStr HKCR "*\shell\Hash with Wax\command" "" "$INSTDIR\waxenc.exe hash %1"
+    WriteRegStr HKCR "*\shell\Hash with Wax" "Icon" "$INSTDIR\hash-file.ico"
 
 SectionEnd
 
@@ -39,5 +41,7 @@ Section "Uninstall"
     DeleteRegKey HKCR "*\shell\Decrypt with Wax"
     DeleteRegKey HKCR ".waxe"
     DeleteRegKey HKCR ".waxd"
+    DeleteRegKey HKCR "*\shell\Hash with Wax\command"
+    DeleteRegKey HKCR "*\shell\Hash with Wax"
 
 SectionEnd
