@@ -33,7 +33,7 @@ fn decrypt(ciphertext: &[u8], nonce: &secretbox::Nonce, key: &secretbox::Key) ->
     Ok(plaintext)
 }
 
-pub fn encrypt_buffer(password: String, buffer: Vec<u8>) -> Vec<u8> {
+pub fn encrypt_buffer(password: String, buffer: Vec<u8>) -> bincode::Result<Vec<u8>> {
     let salt = argon2id13::gen_salt();
     let key = derive_key_from_passphrase(password.as_str(), (&salt).as_ref()).unwrap();
     let (ciphertext, nonce) = encrypt(&*buffer, &key);
@@ -44,17 +44,17 @@ pub fn encrypt_buffer(password: String, buffer: Vec<u8>) -> Vec<u8> {
         salt: salt.0,
     };
 
-    bincode::serialize(&encrypted_data).unwrap()
+    bincode::serialize(&encrypted_data)
 }
 
-pub fn decrypt_buffer(password: String, buffer: Vec<u8>) -> Vec<u8> {
+pub fn decrypt_buffer(password: String, buffer: Vec<u8>) -> Result<Vec<u8>, Box<dyn Error>> {
     let deserialized: EncryptedData = bincode::deserialize(&buffer).unwrap();
 
-    let deserialized_key = derive_key_from_passphrase(password.as_str(), &deserialized.salt).unwrap();
+    let deserialized_key = derive_key_from_passphrase(password.as_str(), &deserialized.salt)?;
 
     decrypt(
         &deserialized.ciphertext,
         &secretbox::Nonce::from_slice(&deserialized.nonce).unwrap(),
         &deserialized_key,
-    ).unwrap()
+    )
 }
