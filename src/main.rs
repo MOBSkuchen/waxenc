@@ -165,7 +165,7 @@ fn hash_cmp(file_path: String) {
 }
 
 fn main() {
-    let args: Vec<String> = vec!["".to_string(), "cmp".to_string(), "Cargo.lock".to_string()];//env::args().collect();
+    let args: Vec<String> = env::args().collect();
     if (&args).len() != 3 {
         display_error("Invalid argument count. Must be 2!".to_string());
         return;
