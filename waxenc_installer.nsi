@@ -9,6 +9,7 @@ Section "Install"
     File "waxenc.exe"
     File "waxe-file.ico"
     File "waxd-file.ico"
+    File "hash-file.ico"
     WriteUninstaller "$INSTDIR\uninstall.exe"
 
     WriteRegStr HKCR ".waxd" "" "waxdfile"
