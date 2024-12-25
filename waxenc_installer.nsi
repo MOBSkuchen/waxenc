@@ -10,6 +10,7 @@ Section "Install"
     File "waxe-file.ico"
     File "waxd-file.ico"
     File "hash-file.ico"
+    File "cmp-file.ico"
     WriteUninstaller "$INSTDIR\uninstall.exe"
 
     WriteRegStr HKCR ".waxd" "" "waxdfile"
@@ -24,6 +25,8 @@ Section "Install"
     WriteRegStr HKCR "*\shell\Decrypt with Wax\command" "" "$INSTDIR\waxenc.exe dec %1"
     WriteRegStr HKCR "*\shell\Hash with Wax\command" "" "$INSTDIR\waxenc.exe hash %1"
     WriteRegStr HKCR "*\shell\Hash with Wax" "Icon" "$INSTDIR\hash-file.ico"
+    WriteRegStr HKCR "*\shell\Compare with Wax\command" "" "$INSTDIR\waxenc.exe cmp %1"
+    WriteRegStr HKCR "*\shell\Compare with Wax" "Icon" "$INSTDIR\cmp-file.ico"
 
 SectionEnd
 
@@ -44,5 +47,7 @@ Section "Uninstall"
     DeleteRegKey HKCR ".waxd"
     DeleteRegKey HKCR "*\shell\Hash with Wax\command"
     DeleteRegKey HKCR "*\shell\Hash with Wax"
+    DeleteRegKey HKCR "*\shell\Compare with Wax\command"
+    DeleteRegKey HKCR "*\shell\Compare with Wax"
 
 SectionEnd
