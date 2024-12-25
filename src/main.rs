@@ -7,7 +7,7 @@ use std::{env, fs, io};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use native_windows_gui::WindowFlags;
-use nwg::{CheckBoxState, FileDialogAction};
+use nwg::{CheckBoxState};
 use nwg::FileDialogAction::Save;
 use crate::lib_crypt::{encrypt_file_xx, decrypt_file_xx, hash_file};
 
