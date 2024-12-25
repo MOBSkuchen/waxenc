@@ -124,6 +124,19 @@ pub fn decrypt_file_xx(file_name: String, password: String, replace: bool) {
     }
 }
 
+pub fn get_hash(file_name: String) -> Result<Vec<u8>, ()> {
+    let file_buffer_r = fs::read(&file_name);
+    if file_buffer_r.is_err() {
+        display_error("Operation failed because the file can not be read!".to_string());
+        return Err(());
+    }
+    
+    let file_buffer = file_buffer_r.unwrap();
+    let hashed = hash(&file_buffer);
+    
+    Ok(hashed.0.into())
+}
+
 pub fn hash_file(file_name: String, dst_file: OsString) {
     if fs::exists(&dst_file).expect("Why tho") {
         if fs::remove_file(&dst_file).map_err(|_| { 
@@ -131,13 +144,9 @@ pub fn hash_file(file_name: String, dst_file: OsString) {
             return
         }
     }
-    let file_buffer_r = fs::read(&file_name);
-    if file_buffer_r.is_err() {
-        display_error("Operation failed because the file can not be read!".to_string());
-        return;
-    }
-    let file_buffer = file_buffer_r.unwrap();
-    let hashed = hash(&file_buffer);
+    let hashed_r = get_hash(file_name);
+    if hashed_r.is_err() {return};
+    let hashed = hashed_r.unwrap();
     let write_r = fs::write(dst_file, hashed);
     if write_r.is_err() {
         display_error("Could not write decrypted file".to_string());
