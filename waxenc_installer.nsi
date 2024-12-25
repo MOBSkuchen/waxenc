@@ -35,7 +35,7 @@ Section "Uninstall"
     Delete "$INSTDIR\uninstall.exe"
     Delete "$INSTDIR\waxe-file.ico"
     Delete "$INSTDIR\waxd-file.ico"
-    Delete "$INSTIDR\hash-file.ico"
+    Delete "$INSTDIR\hash-file.ico"
     Delete "$INSTDIR\cmp-file.ico"
     RMDir "$INSTDIR"
 
