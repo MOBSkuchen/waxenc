@@ -4,15 +4,15 @@ mod lib_crypt;
 extern crate native_windows_gui as nwg;
 
 use std::{env, fs, io};
-use std::path::{Path, PathBuf};
+use std::path::{Path};
 use std::rc::Rc;
 use native_windows_gui::WindowFlags;
-use nwg::{CheckBoxState};
+use nwg::{CheckBoxState, FileDialogAction};
 use nwg::FileDialogAction::Save;
-use crate::lib_crypt::{encrypt_file_xx, decrypt_file_xx, hash_file};
+use crate::lib_crypt::{encrypt_file_xx, decrypt_file_xx, hash_file, get_hash};
 
 pub fn display_error(error_string: String) {
-    nwg::error_message("Error", error_string.as_str());
+    nwg::fatal_message("Error", error_string.as_str());
 }
 
 fn wnd_main(file_path: String, op: bool) {
@@ -88,7 +88,7 @@ fn wnd_main(file_path: String, op: bool) {
     nwg::unbind_event_handler(&handler);
 }
 
-pub fn absolute_path(path: impl AsRef<Path>) -> io::Result<PathBuf> {
+pub fn mk_default_path(path: impl AsRef<Path>) -> io::Result<String> {
     let path = path.as_ref();
 
     let absolute_path = if path.is_absolute() {
@@ -96,22 +96,19 @@ pub fn absolute_path(path: impl AsRef<Path>) -> io::Result<PathBuf> {
     } else {
         env::current_dir()?.join(path)
     };
-
-    Ok(absolute_path)
+    
+    Ok(absolute_path.parent().unwrap().to_str().unwrap().to_string())
 }
 
 fn hash_crafter(file_path: String) {
     nwg::init().expect("Failed to init Native Windows GUI");
     nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
 
-    let x = absolute_path(&file_path).unwrap();
-    let default_path = x.parent().unwrap().to_str().unwrap();
-
     let mut file_save_dialog = Default::default();
     nwg::FileDialog::builder()
         .multiselect(false)
         .filters("Hash(*.hash;*.sha)|Any(*.*)")
-        .default_folder(default_path)
+        .default_folder(mk_default_path(&file_path).unwrap())
         .action(Save)
         .title("Save hash")
         .build(&mut file_save_dialog).expect("FileDialog failed to build");
@@ -122,8 +119,44 @@ fn hash_crafter(file_path: String) {
     }
 }
 
+fn is_all_same(arr: Vec<Vec<u8>>) -> bool {
+    if arr.is_empty() { return true; }
+    let first = &arr[0];
+    arr.iter().all(|item| item == first)
+}
+
+fn hash_cmp(file_path: String) {
+    nwg::init().expect("Failed to init Native Windows GUI");
+    nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
+    
+    let mut hashes = vec![get_hash((&file_path).to_owned()).expect("Panic!")];
+
+    let mut file_save_dialog = Default::default();
+    nwg::FileDialog::builder()
+        .multiselect(true)
+        .filters("Any(*.*)")
+        .default_folder(mk_default_path(&file_path).unwrap())
+        .action(FileDialogAction::Open)
+        .title("Select file(s) to compare")
+        .build(&mut file_save_dialog).expect("FileDialog failed to build");
+
+    let result = file_save_dialog.run::<nwg::ControlHandle>(None);
+    if result {
+        for _file in file_save_dialog.get_selected_items().unwrap() {
+            let file = _file.into_string().unwrap();
+            hashes.push(get_hash(file).expect("Panic!"));
+        }
+        
+        if is_all_same(hashes) {
+            nwg::simple_message("File comparison", "All files are the same!");
+        } else {
+            nwg::error_message("File comparison", "Not all files are same!");
+        }
+    }
+}
+
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = vec!["".to_string(), "cmp".to_string(), "Cargo.lock".to_string()];//env::args().collect();
     if (&args).len() != 3 {
         display_error("Invalid argument count. Must be 2!".to_string());
         return;
@@ -137,5 +170,6 @@ fn main() {
     if &args[1] == "enc" {wnd_main(file_path, true)}
     else if &args[1] == "dec" {wnd_main(file_path, false)}
     else if &args[1] == "hash" {hash_crafter(file_path)}
+    else if &args[1] == "cmp" {hash_cmp(file_path)}
     else { display_error(format!("Invalid operation: {}", (&args)[1])); }
 }
