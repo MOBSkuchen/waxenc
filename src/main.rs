@@ -96,7 +96,7 @@ pub fn mk_default_path(path: impl AsRef<Path>) -> io::Result<String> {
     } else {
         env::current_dir()?.join(path)
     };
-    
+
     Ok(absolute_path.parent().unwrap().to_str().unwrap().to_string())
 }
 
@@ -128,7 +128,7 @@ fn is_all_same(arr: Vec<Vec<u8>>) -> bool {
 fn hash_cmp(file_path: String) {
     nwg::init().expect("Failed to init Native Windows GUI");
     nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
-    
+
     let mut hashes = vec![get_hash((&file_path).to_owned()).expect("Panic!")];
 
     let mut file_save_dialog = Default::default();
@@ -144,9 +144,18 @@ fn hash_cmp(file_path: String) {
     if result {
         for _file in file_save_dialog.get_selected_items().unwrap() {
             let file = _file.into_string().unwrap();
-            hashes.push(get_hash(file).expect("Panic!"));
+            if file.ends_with(".hash") {
+                let read_r = 
+                    fs::read(&file).map_err(|_| 
+                        display_error(format!("Could not read file: {}", file)));
+                if read_r.is_err() {return;}
+                hashes.push(read_r.unwrap());
+            }
+            else {
+                hashes.push(get_hash(file).expect("Panic!"));
+            }
         }
-        
+
         if is_all_same(hashes) {
             nwg::simple_message("File comparison", "All files are the same!");
         } else {
