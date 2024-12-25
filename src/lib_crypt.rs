@@ -126,7 +126,10 @@ pub fn decrypt_file_xx(file_name: String, password: String, replace: bool) {
 
 pub fn hash_file(file_name: String, dst_file: OsString) {
     if fs::exists(&dst_file).expect("Why tho") {
-        display_error("Target file (".to_owned() + dst_file.to_str().unwrap() + ") already exists!");
+        if fs::remove_file(&dst_file).map_err(|_| { 
+            display_error("Failed to remove target file!".parse().unwrap()) }).is_err() {
+            return
+        }
     }
     let file_buffer_r = fs::read(&file_name);
     if file_buffer_r.is_err() {
