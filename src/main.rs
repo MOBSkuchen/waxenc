@@ -119,8 +119,6 @@ fn hash_crafter(file_path: String) {
     let result = file_save_dialog.run::<nwg::ControlHandle>(None);
     if result {
         hash_file(file_path, file_save_dialog.get_selected_item().unwrap());
-    } else {
-        display_error("Failed - cancelled".to_string())
     }
 }
 
