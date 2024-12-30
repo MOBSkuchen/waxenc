@@ -165,7 +165,7 @@ fn hash_cmp(file_path: String) {
 }
 
 fn main() {
-    let args: Vec<String> = vec!["abc".to_string(), "dec".to_string(), "C:/Users/jaspe/OneDrive/Desktop/Wichtige Daten.txt".to_string()];//env::args().collect();
+    let args: Vec<String> = env::args().collect();
     if (&args).len() != 3 {
         display_error("Invalid argument count. Must be 2!".to_string());
         return;

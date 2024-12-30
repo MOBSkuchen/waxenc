@@ -53,7 +53,7 @@ fn encrypt_buffer(password: String, buffer: Vec<u8>) -> bincode::Result<Vec<u8>>
 }
 
 fn decrypt_buffer(password: String, buffer: Vec<u8>) -> Result<Vec<u8>, Box<dyn Error>> {
-    let deserialized: EncryptedData = bincode::deserialize(&buffer).unwrap();
+    let deserialized: EncryptedData = bincode::deserialize(&buffer)?;
 
     let deserialized_key = derive_key_from_passphrase(password.as_str(), &deserialized.salt)?;
 
