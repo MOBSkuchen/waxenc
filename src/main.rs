@@ -12,7 +12,7 @@ use nwg::FileDialogAction::Save;
 use crate::lib_crypt::{encrypt_file_xx, decrypt_file_xx, hash_file, get_hash};
 
 pub fn display_error(error_string: String) {
-    nwg::fatal_message("Error", error_string.as_str());
+    nwg::error_message("Error", error_string.as_str());
 }
 
 fn wnd_main(file_path: String, op: bool) {
@@ -165,7 +165,7 @@ fn hash_cmp(file_path: String) {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = vec!["abc".to_string(), "dec".to_string(), "C:/Users/jaspe/OneDrive/Desktop/Wichtige Daten.txt".to_string()];//env::args().collect();
     if (&args).len() != 3 {
         display_error("Invalid argument count. Must be 2!".to_string());
         return;
